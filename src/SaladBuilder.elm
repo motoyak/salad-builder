@@ -332,42 +332,44 @@ viewBuild error model =
         ]
 
 
+viewTableRow : ( String, Html msg ) -> Html msg
+viewTableRow ( label, value ) =
+    tr []
+        [ th [] [ text (label ++ ":") ]
+        , td [] [ value ]
+        ]
+
+
+viewTable : List ( String, Html msg ) -> Html msg
+viewTable labelValues =
+    table []
+        (List.map viewTableRow labelValues)
+
+
+viewListItem : String -> Html msg
+viewListItem label =
+    li []
+        [ text label ]
+
+
+viewList : List String -> Html msg
+viewList labels =
+    ul []
+        (List.map viewListItem labels)
+
+
 viewConfirmation : Model -> Html msg
 viewConfirmation model =
     div [ class "confirmation" ]
         [ h2 [] [ text "Woo hoo!" ]
         , p [] [ text "Thanks for your order!" ]
-        , table []
-            [ tr []
-                [ th [] [ text "Base:" ]
-                , td [] [ text (baseToString model.salad.base) ]
-                ]
-            , tr []
-                [ th [] [ text "Toppings:" ]
-                , td []
-                    [ ul []
-                        (model.salad.toppings
-                            |> Set.toList
-                            |> List.map (\topping -> li [] [ text topping ])
-                        )
-                    ]
-                ]
-            , tr []
-                [ th [] [ text "Dressing:" ]
-                , td [] [ text (dressingToString model.salad.dressing) ]
-                ]
-            , tr []
-                [ th [] [ text "Name:" ]
-                , td [] [ text model.name ]
-                ]
-            , tr []
-                [ th [] [ text "Email:" ]
-                , td [] [ text model.email ]
-                ]
-            , tr []
-                [ th [] [ text "Phone:" ]
-                , td [] [ text model.phone ]
-                ]
+        , viewTable
+            [ ( "Base", text (baseToString model.salad.base) )
+            , ( "Toppings", viewList (Set.toList model.salad.toppings) )
+            , ( "Dressing", text (dressingToString model.salad.dressing) )
+            , ( "Name", text model.name )
+            , ( "Email", text model.email )
+            , ( "Phone", text model.phone )
             ]
         ]
 
